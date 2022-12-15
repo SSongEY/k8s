@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noco-deploy
+  namespace: noco
+  labels:
+    app: noco-deploy
+spec:
+  selector:
+    matchLabels:
+      app: noco-deploy
+  replicas: 1
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: noco-deploy
+    spec:
+      containers:
+        - name: noco-mysql
+          image: mysql:5.7.40-debian
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          ports:
+            - containerPort: 3306
+
+        - name: noco-deploy
+          image: noco
+          imagePullPolicy: Always
+          livenessProbe: # 처음 실행시 db 접속 문제로 컨테이너 재시작을 위한 장치
+            httpGet:
+              path: /dashboard
+              port: 8080
+            initialDelaySeconds: 60 # 60초 이후 health check 가 실패하므로 컨테이너가 재시작 된다.
+            periodSeconds: 5
+            failureThreshold: 2
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NC_DB
+              value: mysql2://localhost:3306?u=root&p=root&d=noco
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: noco-service
+  namespace: noco
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: noco-deploy
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: noco-ingress
+  namespace: noco
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: noco.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: noco-service
+              servicePort: 80
