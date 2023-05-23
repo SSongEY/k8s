@@ -13,3 +13,10 @@ docker run --name fluentd -p 9880:9880 \
   -e FLUENTD_CONF=fluentd.conf \
   fluentd-kubernetes-daemonset:v1.16.1-debian-kafka2-1.2
 ```
+
+
+### Output ES
+* index 조회
+```
+curl http://{es 주소}:9200/_cat/indices\?v
+```
