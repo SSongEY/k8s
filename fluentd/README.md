@@ -15,6 +15,13 @@ docker run --name fluentd -p 9880:9880 \
 ```
 
 
+### Test
+```
+$ curl -X POST "http://{host}:9880/sample.test" -H "content-type: application/json" -d @test3-1.json
+$ curl -X POST "http://{host}:9880/sample.test" -H "content-type: application/json" -d @test3-2.json
+```
+
+
 ### Output ES
 * index 조회
 ```
