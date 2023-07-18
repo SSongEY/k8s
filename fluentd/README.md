@@ -14,6 +14,7 @@ docker run --name fluentd -p 9880:9880 \
   fluentd-kubernetes-daemonset:v1.16.1-debian-kafka2-1.2
 ```
 
+<br/>
 
 ### Test
 ```
@@ -21,6 +22,7 @@ $ curl -X POST "http://{host}:9880/sample.test" -H "content-type: application/js
 $ curl -X POST "http://{host}:9880/sample.test" -H "content-type: application/json" -d @test3-2.json
 ```
 
+<br/>
 
 ### Output ES
 * index 조회
