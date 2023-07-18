@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-check-deploy
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: health-check-deploy
+  replicas: 1
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: health-check-deploy
+    spec:
+      containers:
+        - name: health-check-deploy
+          image: idock.daumkakao.io/elsie.s-test/etc:health-check
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 1000m
+              memory: 1Gi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+          startupProbe:
+            httpGet:
+              path: /healthCheck?status=400
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthCheck?status=400
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthCheck?status=400
+              port: 8080
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 10
+      terminationGracePeriodSeconds: 20

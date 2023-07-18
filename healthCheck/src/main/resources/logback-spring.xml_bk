@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+    <appender name="LOCAL_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+        </encoder>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5p] [%F]%M\(%L\) : %m%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="ch.qos.logback" level="off"/>
+    <logger name="org.springframework" level="off" additivity="false"/>
+    <logger name="_org.springframework" level="off" additivity="false"/>
+    <logger name="Validator" level="off" additivity="false"/>
+    <logger name="org.apache.catalina" level="off" additivity="false"/>
+    <logger name="org.apache.http" level="off" additivity="false"/>
+    <logger name="tomcat" level="off" additivity="false"/>
+    <logger name="io.sentry" level="off" additivity="false"/>
+    <logger name="com.example.helthcheck" level="info" additivity="false"/>
+    <logger name="org.apache.kafka" level="info" additivity="false"/>
+    <logger name="reactor.netty" level="info" additivity="false"/>
+    <logger name="org.hibernate" level="off" additivity="false"/>
+    <logger name="com.zaxxer.hikari" level="off" additivity="false"/>
+    <logger name="io.netty" level="off" additivity="false"/>
+    <logger name="io.lettuce.core" level="off" additivity="false"/>
+    <logger name="reactor.util" level="off" additivity="false"/>
+    <logger name="org.jboss" level="off" additivity="false"/>
+    <logger name="springfox.documentation" level="off" additivity="false" />
+    <logger name="springfox.bean" level="off" additivity="false"/>
+    <logger name="io.swagger" level="off" additivity="false" />
+
+
+    <springProfile name="local | test">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+    <springProfile name="sandbox">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+    <springProfile name="cbt">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+    <springProfile name="stage">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+    <springProfile name="production | prodtest">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+</configuration>
